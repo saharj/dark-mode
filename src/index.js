@@ -5,15 +5,19 @@ import axios from "axios";
 import Charts from "./components/Charts";
 import Navbar from "./components/Navbar";
 
-import useDarkMode from "./hooks/useDarkMode";
-
 import "./styles.scss";
 
 const App = () => {
   const [coinData, setCoinData] = useState([]);
+  const [darkMode, setDarkMode] = useState(
+    window.localStorage.getItem("darkMode")
+  );
 
-  const [darkMode, setDarkMode] = useDarkMode("darkMode", false);
-
+  const updateMode = (bool) => {
+    // **Feedback**
+    // It is weird that the instruction asks us to move the state to the Navbar, while the stylings happen in this component.
+    setDarkMode(bool);
+  };
   useEffect(() => {
     axios
       .get(
@@ -23,8 +27,8 @@ const App = () => {
       .catch((err) => console.log(err));
   }, []);
   return (
-    <div className={darkMode ? "dark-mode App" : "App"}>
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+    <div className={darkMode === true ? "dark-mode App" : "App"}>
+      <Navbar updateMode={updateMode} />
       <Charts coinData={coinData} />
     </div>
   );
